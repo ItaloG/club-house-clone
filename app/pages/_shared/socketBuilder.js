@@ -21,7 +21,7 @@ export default class SocketBuilder {
   }
 
   build() {
-    const socket = globalThis.importScripts.connect(this.socketUrl, {
+    const socket = globalThis.io.connect(this.socketUrl, {
       withCredentials: false,
     });
 

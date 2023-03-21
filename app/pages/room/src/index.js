@@ -1,4 +1,4 @@
-import { constants } from "../../_shared/constants";
+import { constants } from "../../_shared/constants.js";
 import SocketBuilder from "../../_shared/socketBuilder.js";
 
 const socketBuilder = new SocketBuilder({
