@@ -1,16 +1,7 @@
 import { constants } from "../../_shared/constants.js";
+import RoomController from "./controller.js";
 import RoomSocketBuilder from "./util/roomSocket.js";
-
-const socketBuilder = new RoomSocketBuilder({
-  socketUrl: constants.socketUrl,
-  namespace: constants.socketNamespaces.room,
-});
-
-const socket = socketBuilder
-  .setOnUserConnected((user) => console.log("user connected!", user))
-  .setOnUserDisconnected((user) => console.log("user disconnected!", user))
-  .setOnLobbyUpdated((room) => console.log("room list", room))
-  .build();
+import View from "./view.js";
 
 const room = {
   id: "001",
@@ -22,4 +13,12 @@ const user = {
   username: "ItaloG" + Date.now(),
 };
 
-socket.emit(constants.event.JOIN_ROOM, { user, room });
+const socketBuilder = new RoomSocketBuilder({
+  socketUrl: constants.socketUrl,
+  namespace: constants.socketNamespaces.room,
+});
+
+const roomInfo = { user, room };
+
+const dependencies = { socketBuilder, roomInfo, view: View };
+await RoomController.initialize(dependencies);
