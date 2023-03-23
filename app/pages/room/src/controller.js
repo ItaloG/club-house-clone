@@ -35,10 +35,10 @@ export default class RoomController {
   }
 
   onUserProfileUpgrade() {
-    return (data) => { 
-      const attendee =new Attendee(data)
-      console.log('onUserProfileUpgrade', attendee);
-      
+    return (data) => {
+      const attendee = new Attendee(data);
+      console.log("onUserProfileUpgrade", attendee);
+      if (attendee.isSpeaker) this.view.addAttendeeOnGrid(attendee, true);
     };
   }
 
