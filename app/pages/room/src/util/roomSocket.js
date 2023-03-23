@@ -5,18 +5,28 @@ export default class RoomSocketBuilder extends SocketBuilder {
   constructor({ socketUrl, namespace }) {
     super({ socketUrl, namespace });
 
-    this.onLobbyUpdated = () => {};
+    this.onRoomUpdated = () => {};
+    this.onUserProfileUpgrade = () => {};
   }
 
-  setOnLobbyUpdated(fn) {
-    this.onLobbyUpdated = fn;
+  setOnRoomUpdated(fn) {
+    this.onRoomUpdated = fn;
+    return this;
+  }
+
+  setOnUserProfileUpgrade(fn) {
+    this.onUserProfileUpgradeX = fn;
     return this;
   }
 
   build() {
     const socket = super.build();
 
-    socket.on(constants.event.LOBBY_UPDATED, this.setOnLobbyUpdated);
+    socket.on(constants.event.LOBBY_UPDATED, this.onRoomUpdated);
+    socket.on(
+      constants.event.UPGRADE_USER_PERMISSION,
+      this.onUserProfileUpgrade
+    );
 
     return socket;
   }

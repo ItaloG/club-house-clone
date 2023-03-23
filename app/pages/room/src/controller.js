@@ -1,4 +1,5 @@
 import { constants } from "../../_shared/constants.js";
+import Attendee from "./entities/attendee.js";
 
 export default class RoomController {
   constructor({ roomInfo, socketBuilder, view }) {
@@ -27,20 +28,41 @@ export default class RoomController {
   _setupSocket() {
     return this.socketBuilder
       .setOnUserConnected(this.onUserConnected())
-      .setOnUserDisconnected(this.onUserDisconnected())
-      .setOnLobbyUpdated(this.onLobbyUpdated())
+      .setOnUserDisconnected(this.onDisconnected())
+      .setOnRoomUpdated(this.onRoomUpdated())
+      .setOnUserProfileUpgrade(this.onUserProfileUpgrade())
       .build();
   }
 
-  onLobbyUpdated() {
-    return (room) => console.log("room list", room);
+  onUserProfileUpgrade() {
+    return (data) => { 
+      const attendee =new Attendee(data)
+      console.log('onUserProfileUpgrade', attendee);
+      
+    };
   }
 
-  onUserDisconnected() {
-    return (user) => console.log("user disconnected!", user);
+  onRoomUpdated() {
+    return (room) => {
+      this.view.updateAttendeesOnGrid(room);
+      console.log("room list", room);
+    };
+  }
+
+  onDisconnected() {
+    return (data) => {
+      const attendee = new Attendee(data);
+      console.log(`${attendee.username} disconnected!!`);
+      this.view.removeItemFromGrid(attendee.id);
+    };
   }
 
   onUserConnected() {
-    return (user) => console.log("user connected!", user);
+    return (data) => {
+      console.log(data);
+      const attendee = new Attendee(data);
+      console.log("user connected!", attendee);
+      this.view.addAttendeeOnGrid(attendee);
+    };
   }
 }
