@@ -53,7 +53,7 @@ export default class RoomsController {
     this.rooms.set(roomId, room);
 
     // notifica a sala que o usuário se desconectou
-    socket.io(roomId).emit(constants.event.USER_DISCONNECTED, user);
+    socket.to(roomId).emit(constants.event.USER_DISCONNECTED, user);
   }
 
   #notifyUserProfileUpgrade(socket, roomId, newOwner) {
@@ -88,7 +88,6 @@ export default class RoomsController {
     const updatesUserData = this.#updateGlobalUserData(userId, user, roomId);
 
     const updatedRoom = this.#joinUserRoom(socket, updatesUserData, room);
-    socket.emit(constants.event.USER_CONNECTED, updatesUserData);
     this.#notifyUsersOnRoom(socket, roomId, updatesUserData);
     this.#replayWithActiveUSers(socket, updatedRoom.users);
   }

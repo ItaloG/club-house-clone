@@ -17,7 +17,7 @@ export default class LobbyController {
   }
 
   _setupViewEvents() {
-    this.view.updateUSerImage(this.user);
+    this.view.updateUserImage(this.user);
     this.view.configureCreateRoomButton();
   }
 

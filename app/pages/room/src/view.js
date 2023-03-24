@@ -7,7 +7,7 @@ const gridAttendees = document.getElementById("gridAttendees");
 const gridSpeakers = document.getElementById("gridSpeakers");
 
 export default class View {
-  static updateUSerImage({ img, username }) {
+  static updateUserImage({ img, username }) {
     imgUser.src = img;
     imgUser.alt = username;
   }
