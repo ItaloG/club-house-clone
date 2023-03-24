@@ -4,6 +4,7 @@ import { constants } from "../util/constants.js";
 
 export default class RoomsController {
   #users = new Map();
+
   constructor() {
     this.rooms = new Map();
   }
@@ -23,19 +24,21 @@ export default class RoomsController {
     const userId = socket.id;
     const user = this.#users.get(userId);
     const roomId = user.roomId;
-    // remover user da lista de usuários ativos
+    // remover user da lista de usuarios ativos
     this.#users.delete(userId);
 
-    // caso seja um usuário sujeira que estava em uma sala que não existe mais
-    if (!this.rooms.has(roomId)) return;
+    // caso seja um usuario sujeira que estava em uma sala que não existe mais
+    if (!this.rooms.has(roomId)) {
+      return;
+    }
 
     const room = this.rooms.get(roomId);
-    const userToBeRemoved = [...room.users].find(({ id }) => id === userId);
+    const toBeRemoved = [...room.users].find(({ id }) => id === userId);
 
-    // removemos o usuário da sala
-    room.users.delete(userToBeRemoved);
+    // removemos o usuario da sala
+    room.users.delete(toBeRemoved);
 
-    //se não tiver mais nunhum usuário na sala, matamos a sala
+    // se não tiver mais nenhum usuario na sala, matamos a sala
     if (!room.users.size) {
       this.rooms.delete(roomId);
       return;
@@ -44,27 +47,27 @@ export default class RoomsController {
     const disconnectedUserWasAnOwner = userId === room.owner.id;
     const onlyOneUserLeft = room.users.size === 1;
 
-    // validar se tem somente um usuário ou se o usuário era o dono da sala
+    // validar se tem somente um usuario ou se o usuario era o dono da sala
     if (onlyOneUserLeft || disconnectedUserWasAnOwner) {
       room.owner = this.#getNewRoomOwner(room, socket);
     }
 
-    // atualiza  aroom no final
+    // atualiza a room no final
     this.rooms.set(roomId, room);
 
-    // notifica a sala que o usuário se desconectou
+    // notifica a sala que o usuario se desconectou
     socket.to(roomId).emit(constants.event.USER_DISCONNECTED, user);
   }
 
-  #notifyUserProfileUpgrade(socket, roomId, newOwner) {
-    socket.to(roomId).emit(constants.event.UPGRADE_USER_PERMISSION, newOwner);
+  #notifyUserProfileUpgrade(socket, roomId, user) {
+    socket.to(roomId).emit(constants.event.UPGRADE_USER_PERMISSION, user);
   }
 
   #getNewRoomOwner(room, socket) {
     const users = [...room.users.values()];
     const activeSpeakers = users.find((user) => user.isSpeaker);
-    // se quem desconetou era dono, passa a liderança para o próximo
-    // se não houver speakers, ele pega o ettendee mais antigo (primeira posição)
+    // se quem desconectou era o dono, passa a liderança para o próximo
+    // se não houver speakers, ele pega o attendee mais antigo (primeira posição)
     const [newOwner] = activeSpeakers ? [activeSpeakers] : users;
     newOwner.isSpeaker = true;
 
@@ -85,18 +88,16 @@ export default class RoomsController {
     const userId = (user.id = socket.id);
     const roomId = room.id;
 
-    const updatesUserData = this.#updateGlobalUserData(userId, user, roomId);
+    const updatedUserData = this.#updateGlobalUserData(userId, user, roomId);
 
-    const updatedRoom = this.#joinUserRoom(socket, updatesUserData, room);
-    this.#notifyUsersOnRoom(socket, roomId, updatesUserData);
-    this.#replayWithActiveUSers(socket, updatedRoom.users);
+    const updatedRoom = this.#joinUserRoom(socket, updatedUserData, room);
+    this.#notifyUsersOnRoom(socket, roomId, updatedUserData);
+    this.#replyWithActiveUsers(socket, updatedRoom.users);
   }
-
-  #replayWithActiveUSers(socket, users) {
-    const event = constants.event.USER_CONNECTED;
+  #replyWithActiveUsers(socket, users) {
+    const event = constants.event.LOBBY_UPDATED;
     socket.emit(event, [...users.values()]);
   }
-
   #notifyUsersOnRoom(socket, roomId, user) {
     const event = constants.event.USER_CONNECTED;
     socket.to(roomId).emit(event, user);
@@ -106,7 +107,10 @@ export default class RoomsController {
     const roomId = room.id;
     const existingRoom = this.rooms.has(roomId);
     const currentRoom = existingRoom ? this.rooms.get(roomId) : {};
-    const currentUser = new Attendee({ ...user, roomId });
+    const currentUser = new Attendee({
+      ...user,
+      roomId,
+    });
 
     // definir quem é o dono da sala
     const [owner, users] = existingRoom
@@ -140,20 +144,19 @@ export default class RoomsController {
 
     return mappedRoom;
   }
-
   #updateGlobalUserData(userId, userData = {}, roomId = "") {
     const user = this.#users.get(userId) ?? {};
     const existingRoom = this.rooms.has(roomId);
 
-    const updatedUSerData = new Attendee({
+    const updatedUserData = new Attendee({
       ...user,
       ...userData,
       roomId,
-      // se for o único na sala
+      // se for o unico na sala
       isSpeaker: !existingRoom,
     });
 
-    this.#users.set(userId, updatedUSerData);
+    this.#users.set(userId, updatedUserData);
 
     return this.#users.get(userId);
   }
@@ -166,10 +169,10 @@ export default class RoomsController {
     return new Map(functions);
 
     /*
-        [
-            ['onNewConnection', this.onNewConnection],
-            ['disconnect', this.disconnect]
-        ]
-    */
+            [
+                ['onNewConnection', this.onNewConnection],
+                ['disconnect', this.disconnect],
+            ]
+        */
   }
 }

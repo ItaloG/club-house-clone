@@ -1,8 +1,8 @@
-import LobbyController from "./controllers/lobbyController.js";
 import RoomsController from "./controllers/roomsController.js";
-import { constants } from "./util/constants.js";
 import SocketServer from "./util/socket.js";
 import Event from "node:events";
+import { constants } from "./util/constants.js";
+import LobbyController from "./controllers/lobbyController.js";
 
 const port = process.env.PORT || 3000;
 const socketServer = new SocketServer({ port });

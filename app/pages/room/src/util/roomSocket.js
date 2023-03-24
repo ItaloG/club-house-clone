@@ -15,7 +15,7 @@ export default class RoomSocketBuilder extends SocketBuilder {
   }
 
   setOnUserProfileUpgrade(fn) {
-    this.onUserProfileUpgradeX = fn;
+    this.onUserProfileUpgrade = fn;
     return this;
   }
 
