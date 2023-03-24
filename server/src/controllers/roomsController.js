@@ -57,7 +57,7 @@ export default class RoomsController {
   }
 
   #notifyUserProfileUpgrade(socket, roomId, newOwner) {
-    socket.to(roomId).emit(constants.event.UPGRADE_USER_PERMISSION, user);
+    socket.to(roomId).emit(constants.event.UPGRADE_USER_PERMISSION, newOwner);
   }
 
   #getNewRoomOwner(room, socket) {
