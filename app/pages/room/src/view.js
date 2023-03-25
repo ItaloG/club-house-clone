@@ -5,6 +5,9 @@ const imgUser = document.getElementById("imgUser");
 const roomTopic = document.getElementById("pTopic");
 const gridAttendees = document.getElementById("gridAttendees");
 const gridSpeakers = document.getElementById("gridSpeakers");
+const btnMicrophone = document.getElementById("btnMicrophone");
+const btnClipBoard = document.getElementById("btnClipBoard");
+const btnClap = document.getElementById("btnClap");
 
 export default class View {
   static updateUserImage({ img, username }) {
@@ -49,5 +52,18 @@ export default class View {
     }
 
     baseElement.innerHTML += htmlTEmplate;
+  }
+
+  static showUserFeatures(isSpeaker) {
+    if (!isSpeaker) {
+      btnClap.classList.remove("hidden");
+      btnMicrophone.classList.add("hidden");
+      btnClipBoard.classList.add("hidden");
+      return;
+    }
+
+    btnClap.classList.add("hidden");
+    btnMicrophone.classList.remove("hidden");
+    btnClipBoard.classList.remove("hidden");
   }
 }
