@@ -54,9 +54,9 @@ export default class View {
     baseElement.innerHTML += htmlTEmplate;
   }
 
-  static _createAudioElement({ meted = true, srcObject }) {
+  static _createAudioElement({ muted = true, srcObject }) {
     const audio = document.createElement("audio");
-    audio.muted = meted;
+    audio.muted = muted;
     audio.srcObject = srcObject;
 
     audio.addEventListener("loadedmetadata", async () => {

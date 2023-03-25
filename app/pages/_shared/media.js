@@ -16,7 +16,7 @@ export default class Media {
       audioContext.createMediaStreamDestination()
     );
     oscillator.start();
-    const track = destination.stream.getAudioTracks();
+    const [track] = destination.stream.getAudioTracks();
 
     return Object.assign(track, { enabled: false });
   }

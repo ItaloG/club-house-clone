@@ -9,6 +9,7 @@ class PeerCustomModule extends globalThis.Peer {
     const originalCallResult = super.call(...args);
 
     this.onCall(originalCallResult);
+    return originalCallResult;
   }
 }
 
@@ -75,7 +76,7 @@ export default class PeerBuilder {
 
     // const peer = new globalThis.Peer(...this.peerConfig);
     const peer = new PeerCustomModule({
-      config: [ ...this.peerConfig ],
+      config: [...this.peerConfig],
       onCall: this._prepareCallEvent.bind(this),
     });
     peer.on("error", this.onError);
