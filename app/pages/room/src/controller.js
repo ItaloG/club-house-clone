@@ -24,8 +24,23 @@ export default class RoomController {
   }
 
   _setupViewEvents() {
+    this.view.configureOnMicrophoneActivation(this.onMicrophoneActivation());
+    this.view.configureLeaveButton();
+    this.view.configureClapButton(this.onClapPressed());
     this.view.updateUserImage(this.roomInfo.user);
     this.view.updateRoomTopic(this.roomInfo.room);
+  }
+
+  onMicrophoneActivation() {
+    return async () => {
+      await this.roomService.toggleAudioActivation()
+    };
+  }
+
+  onClapPressed() {
+    return () => {
+      this.socket.emit(constants.event.SPEAK_ANSWER, this.roomInfo.user);
+    };
   }
 
   _setupSocket() {
@@ -34,7 +49,21 @@ export default class RoomController {
       .setOnUserDisconnected(this.onDisconnected())
       .setOnRoomUpdated(this.onRoomUpdated())
       .setOnUserProfileUpgrade(this.onUserProfileUpgrade())
+      .setOnSpeakRequested(this.onSpeakRequested())
       .build();
+  }
+
+  onSpeakRequested() {
+    return (data) => {
+      const user = new Attendee(data);
+      const result = prompt(
+        `${user.username} pediu para falar! aceitar? 1 som, 0 não`
+      );
+      this.socket.emit(constants.event.SPEAK_ANSWER, {
+        answer: !!Number(result),
+        user,
+      });
+    };
   }
 
   async _setupWebRTC() {
@@ -104,8 +133,11 @@ export default class RoomController {
     return (data) => {
       const attendee = new Attendee(data);
       console.log("onUserProfileUpgrade", attendee);
-      this.roomService.upgradeUserPermission(attendee);
-      if (attendee.isSpeaker) this.view.addAttendeeOnGrid(attendee, true);
+
+      if (attendee.isSpeaker) {
+        this.roomService.upgradeUserPermission(attendee);
+        this.view.addAttendeeOnGrid(attendee, true);
+      }
 
       this.activeUserFeatures();
     };
