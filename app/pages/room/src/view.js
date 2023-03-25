@@ -54,6 +54,27 @@ export default class View {
     baseElement.innerHTML += htmlTEmplate;
   }
 
+  static _createAudioElement({ meted = true, srcObject }) {
+    const audio = document.createElement("audio");
+    audio.muted = meted;
+    audio.srcObject = srcObject;
+
+    audio.addEventListener("loadedmetadata", async () => {
+      try {
+        await audio.play();
+      } catch (error) {
+        console.error("error, to play", error);
+      }
+    });
+  }
+
+  static renderAudioElement({ callerId, stream, isCurrentId }) {
+    View._createAudioElement({
+      muted: isCurrentId,
+      srcObject: stream,
+    });
+  }
+
   static showUserFeatures(isSpeaker) {
     if (!isSpeaker) {
       btnClap.classList.remove("hidden");

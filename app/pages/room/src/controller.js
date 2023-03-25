@@ -41,7 +41,48 @@ export default class RoomController {
     return this.peerBuilder
       .setOnError(this.onPeerError())
       .setOnConnectionOpened(this.onPeerConnectionOpened())
+      .setOnCallError(this.onCallError())
+      .setOnCallClose(this.onCallClose())
+      .setOnCallReceived(this.onCallReceived())
+      .setOnStreamReceived(this.onStreamReceived())
       .build();
+  }
+
+  onStreamReceived() {
+    return (call, stream) => {
+      const callerId = call.peer;
+      console.log("onStreamReceived", call, stream);
+      const { isCurrentId } = this.roomService.addReceivedPeer(call);
+      this.view.renderAudioElement({
+        callerId,
+        stream,
+        isCurrentId,
+      });
+    };
+  }
+
+  onCallReceived() {
+    return async (call) => {
+      const stream = await this.roomService.getCurrentStream();
+      console.log("onCallReceived", call);
+      call.answer(stream);
+    };
+  }
+
+  onCallClose() {
+    return (call) => {
+      console.log("onCallClose", call);
+      const peerId = call.peer;
+      this.roomService.disconnectPeer({ peerId });
+    };
+  }
+
+  onCallError() {
+    return (call, error) => {
+      console.log("onCallError", call, error);
+      const peerId = call.peer;
+      this.roomService.disconnectPeer({ peerId });
+    };
   }
 
   onPeerError() {
@@ -86,15 +127,19 @@ export default class RoomController {
       const attendee = new Attendee(data);
       console.log(`${attendee.username} disconnected!!`);
       this.view.removeItemFromGrid(attendee.id);
+
+      this.roomService.disconnectPeer(attendee);
     };
   }
 
   onUserConnected() {
     return (data) => {
-      console.log(data);
       const attendee = new Attendee(data);
       console.log("user connected!", attendee);
       this.view.addAttendeeOnGrid(attendee);
+
+      // vamos ligar!
+      this.roomService.callNewUser(attendee);
     };
   }
 
