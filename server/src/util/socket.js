@@ -1,4 +1,4 @@
-import http from "node:http";
+import http from "http";
 import { Server } from "socket.io";
 import { constants } from "./constants.js";
 
@@ -8,6 +8,14 @@ export default class SocketServer {
     this.port = port;
     this.namespaces = {};
   }
+  // [
+  //     {
+  //         room: {
+  //             events,
+  //             eventEmitter
+  //         }
+  //     }
+  // ]
 
   attachEvents({ routeConfig }) {
     for (const routes of routeConfig) {

@@ -8,18 +8,17 @@ export default class LobbyController {
 
   onNewConnection(socket) {
     const { id } = socket;
-    console.log("[Lobby] connection established with", id);
+    console.log("[Lobby] connection stablished with", id);
     this.#updateLobbyRooms(socket, [...this.activeRooms.values()]);
 
-    this.#activeEventProxy(socket);
+    this.#activateEventProxy(socket);
   }
 
-  #activeEventProxy(socket) {
+  #activateEventProxy(socket) {
     this.roomsListener.on(constants.event.LOBBY_UPDATED, (rooms) => {
       this.#updateLobbyRooms(socket, rooms);
     });
   }
-
   #updateLobbyRooms(socket, activeRooms) {
     socket.emit(constants.event.LOBBY_UPDATED, activeRooms);
   }

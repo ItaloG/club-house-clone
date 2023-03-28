@@ -7,14 +7,12 @@ export default class RoomsController {
   #users = new Map();
 
   constructor({ roomsPubSub }) {
+    this.roomsPubSub = roomsPubSub;
     this.rooms = new CustomMap({
       observer: this.#roomObserver(),
       customMapper: this.#mapRoom.bind(this),
     });
-
-    this.roomsPubSub = roomsPubSub;
   }
-
   #roomObserver() {
     return {
       notify: (rooms) => this.notifyRoomSubscribers(rooms),
@@ -58,7 +56,7 @@ export default class RoomsController {
 
   onNewConnection(socket) {
     const { id } = socket;
-    console.log("connection established with", id);
+    console.log("connection stablished with", id);
     this.#updateGlobalUserData(id);
   }
 
@@ -141,12 +139,10 @@ export default class RoomsController {
     this.#notifyUsersOnRoom(socket, roomId, updatedUserData);
     this.#replyWithActiveUsers(socket, updatedRoom.users);
   }
-
   #replyWithActiveUsers(socket, users) {
     const event = constants.event.LOBBY_UPDATED;
     socket.emit(event, [...users.values()]);
   }
-
   #notifyUsersOnRoom(socket, roomId, user) {
     const event = constants.event.USER_CONNECTED;
     socket.to(roomId).emit(event, user);
@@ -193,7 +189,6 @@ export default class RoomsController {
 
     return mappedRoom;
   }
-
   #updateGlobalUserData(userId, userData = {}, roomId = "") {
     const user = this.#users.get(userId) ?? {};
     const existingRoom = this.rooms.has(roomId);
