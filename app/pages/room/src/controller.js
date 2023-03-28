@@ -27,19 +27,20 @@ export default class RoomController {
     this.view.configureOnMicrophoneActivation(this.onMicrophoneActivation());
     this.view.configureLeaveButton();
     this.view.configureClapButton(this.onClapPressed());
+    debugger;
     this.view.updateUserImage(this.roomInfo.user);
     this.view.updateRoomTopic(this.roomInfo.room);
   }
 
   onMicrophoneActivation() {
     return async () => {
-      await this.roomService.toggleAudioActivation()
+      await this.roomService.toggleAudioActivation();
     };
   }
 
   onClapPressed() {
     return () => {
-      this.socket.emit(constants.event.SPEAK_ANSWER, this.roomInfo.user);
+      this.socket.emit(constants.event.SPEAK_REQUEST, this.roomInfo.user);
     };
   }
 

@@ -27,7 +27,7 @@ export default class RoomService {
     return this.currentUser;
   }
 
-  static toggleAudioActivation() {
+  async toggleAudioActivation() {
     this.isAudioActive = !this.isAudioActive;
     this.switchAudioStreamSource({ realAudio: this.isAudioActive });
   }

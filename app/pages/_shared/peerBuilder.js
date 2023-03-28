@@ -69,7 +69,7 @@ export default class PeerBuilder {
     this.onCallReceived(call);
   }
 
-  build() {
+  async build() {
     // o peer recebe uma lista de argumentos,
     // new Peer(id, config1, config2)
     // params = [], new Peer(...params)

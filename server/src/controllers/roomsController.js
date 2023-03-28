@@ -22,7 +22,7 @@ export default class RoomsController {
   }
 
   speakAnswer(socket, { answer, user }) {
-    const userId = socket.id;
+    const userId = user.id;
     const currentUser = this.#users.get(userId);
     const updatedUser = new Attendee({
       ...currentUser,
@@ -30,7 +30,7 @@ export default class RoomsController {
     });
     this.#users.set(userId, updatedUser);
 
-    const roomId = currentUser.roomId;
+    const roomId = user.roomId;
     const room = this.rooms.get(roomId);
     const userOnRoom = [...room.users.values()].find(({ id }) => id === userId);
     room.users.delete(userOnRoom);
@@ -39,7 +39,7 @@ export default class RoomsController {
 
     // volta para ele mesmo
     socket.emit(constants.event.UPGRADE_USER_PERMISSION, updatedUser);
-    // notifica a sala para ligar para esse novo speaker
+    // notifica a sala inteira para ligar para esse novo speaker
     this.#notifyUserProfileUpgrade(socket, roomId, updatedUser);
   }
 

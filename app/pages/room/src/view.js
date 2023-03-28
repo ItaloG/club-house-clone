@@ -95,7 +95,7 @@ export default class View {
   }
 
   static configureClapButton(command) {
-    btnClap.addEventListener("click", View._onClapClick(command));
+    btnClap.addEventListener("click", () => View._onClapClick(command));
   }
 
   static _redirectToLobby() {
@@ -121,7 +121,7 @@ export default class View {
   }
 
   static configureLeaveButton() {
-    btnLeave.addEventListener("click", View._redirectToLobby());
+    btnLeave.addEventListener("click", () => View._redirectToLobby());
   }
 
   static configureOnMicrophoneActivation(command) {
