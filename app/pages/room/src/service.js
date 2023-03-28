@@ -1,5 +1,4 @@
 import UserStream from "./entities/userStream.js";
-
 export default class RoomService {
   constructor({ media }) {
     this.media = media;
@@ -14,11 +13,10 @@ export default class RoomService {
 
   async init() {
     this.currentStream = new UserStream({
-      isFake: false,
       stream: await this.media.getUserAudio(),
+      isFake: false,
     });
   }
-
   setCurrentPeer(peer) {
     this.currentPeer = peer;
   }
@@ -31,7 +29,6 @@ export default class RoomService {
     this.isAudioActive = !this.isAudioActive;
     this.switchAudioStreamSource({ realAudio: this.isAudioActive });
   }
-
   async upgradeUserPermission(user) {
     if (!user.isSpeaker) return;
 
@@ -42,16 +39,15 @@ export default class RoomService {
 
     return this._reconnectAsSpeaker();
   }
-
   async _reconnectAsSpeaker() {
     return this.switchAudioStreamSource({ realAudio: true });
   }
-
   _reconnectPeers(stream) {
     for (const peer of this.peers.values()) {
       const peerId = peer.call.peer;
       peer.call.close();
       console.log("calling", peerId);
+
       this.currentPeer.call(peerId, stream);
     }
   }
@@ -80,7 +76,9 @@ export default class RoomService {
 
   async getCurrentStream() {
     const { isSpeaker } = this.currentUser;
-    if (isSpeaker) return this.currentStream.stream;
+    if (isSpeaker) {
+      return this.currentStream.stream;
+    }
 
     return this.media.createMediaStreamFake();
   }
@@ -99,10 +97,10 @@ export default class RoomService {
     this.peers.get(peerId).call.close();
     this.peers.delete(peerId);
   }
-
   async callNewUser(user) {
-    // se o usuário que entrou for speaker, ele vai me ligar!
+    // se o usuario que entrou for speaker, ele vai me ligar!
     const { isSpeaker } = this.currentUser;
+
     if (!isSpeaker) return;
 
     const stream = await this.getCurrentStream();

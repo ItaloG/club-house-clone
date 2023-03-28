@@ -20,7 +20,6 @@ export default class LobbyController {
     this.view.updateUserImage(this.user);
     this.view.configureCreateRoomButton();
   }
-
   _setupSocket() {
     return this.socketBuilder.setOnLobbyUpdated(this.onLobbyUpdated()).build();
   }

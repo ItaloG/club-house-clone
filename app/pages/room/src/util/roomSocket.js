@@ -4,7 +4,6 @@ import SocketBuilder from "../../../_shared/socketBuilder.js";
 export default class RoomSocketBuilder extends SocketBuilder {
   constructor({ socketUrl, namespace }) {
     super({ socketUrl, namespace });
-
     this.onRoomUpdated = () => {};
     this.onUserProfileUpgrade = () => {};
     this.onSpeakRequested = () => {};
@@ -12,14 +11,15 @@ export default class RoomSocketBuilder extends SocketBuilder {
 
   setOnRoomUpdated(fn) {
     this.onRoomUpdated = fn;
+
     return this;
   }
 
   setOnUserProfileUpgrade(fn) {
     this.onUserProfileUpgrade = fn;
+
     return this;
   }
-
   setOnSpeakRequested(fn) {
     this.onSpeakRequested = fn;
     return this;
@@ -28,12 +28,12 @@ export default class RoomSocketBuilder extends SocketBuilder {
   build() {
     const socket = super.build();
 
-    socket.on(constants.event.LOBBY_UPDATED, this.onRoomUpdated);
+    socket.on(constants.events.LOBBY_UPDATED, this.onRoomUpdated);
     socket.on(
-      constants.event.UPGRADE_USER_PERMISSION,
+      constants.events.UPGRADE_USER_PERMISSION,
       this.onUserProfileUpgrade
     );
-    socket.on(constants.event.SPEAK_REQUEST, this.onSpeakRequested);
+    socket.on(constants.events.SPEAK_REQUEST, this.onSpeakRequested);
 
     return socket;
   }

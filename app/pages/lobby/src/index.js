@@ -4,8 +4,8 @@ import LobbySocketBuilder from "./util/lobbySocketBuilder.js";
 import View from "./view.js";
 
 const user = {
-  img: "https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Profile-512.png",
-  username: "ItaloG" + Date.now(),
+  img: "https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/bear_russian_animal_avatar-256.png",
+  username: "Italo " + Date.now(),
 };
 
 const socketBuilder = new LobbySocketBuilder({
@@ -18,5 +18,6 @@ const dependencies = {
   user,
   view: View,
 };
-
-LobbyController.initialize(dependencies).catch((error) => alert(error.message));
+LobbyController.initialize(dependencies).catch((error) => {
+  alert(error.message);
+});

@@ -8,7 +8,10 @@ class PeerCustomModule extends globalThis.Peer {
   call(...args) {
     const originalCallResult = super.call(...args);
 
+    // aqui acontece a magia, interceptamos o call e adicionamos
+    // o comportamento do call para todos os objetos
     this.onCall(originalCallResult);
+
     return originalCallResult;
   }
 }
@@ -16,7 +19,6 @@ class PeerCustomModule extends globalThis.Peer {
 export default class PeerBuilder {
   constructor({ peerConfig }) {
     this.peerConfig = peerConfig;
-
     this.onError = () => {};
     this.onConnectionOpened = () => {};
     this.onCallError = () => {};
@@ -60,7 +62,6 @@ export default class PeerBuilder {
 
     return this;
   }
-
   _prepareCallEvent(call) {
     call.on("stream", (stream) => this.onStreamReceived(call, stream));
     call.on("error", (error) => this.onCallError(call, error));
@@ -72,9 +73,9 @@ export default class PeerBuilder {
   async build() {
     // o peer recebe uma lista de argumentos,
     // new Peer(id, config1, config2)
-    // params = [], new Peer(...params)
+    // params = [], new Peer(...paramsc)
 
-    // const peer = new globalThis.Peer(...this.peerConfig);
+    // const peer = new globalThis.Peer(...this.peerConfig)
     const peer = new PeerCustomModule({
       config: [...this.peerConfig],
       onCall: this._prepareCallEvent.bind(this),

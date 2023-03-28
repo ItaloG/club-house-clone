@@ -15,7 +15,7 @@ const btnLeave = document.getElementById("btnLeave");
 export default class View {
   static updateUserImage({ img, username }) {
     imgUser.src = img;
-    imgUser.alt = username;
+    imgUser.al = username;
   }
 
   static updateRoomTopic({ topic }) {
@@ -39,22 +39,22 @@ export default class View {
   static addAttendeeOnGrid(item, removeFirst = false) {
     const attendee = new Attendee(item);
     const id = attendee.id;
-    const htmlTEmplate = getTemplate(attendee);
+    const htmlTemplate = getTemplate(attendee);
     const baseElement = attendee.isSpeaker ? gridSpeakers : gridAttendees;
 
     if (removeFirst) {
       View.removeItemFromGrid(id);
-      baseElement.innerHTML += htmlTEmplate;
+      baseElement.innerHTML += htmlTemplate;
       return;
     }
 
     const existingItem = View._getExistingItemOnGrid({ id, baseElement });
     if (existingItem) {
-      existingItem.innerHTML = htmlTEmplate;
+      existingItem.innerHTML = htmlTemplate;
       return;
     }
 
-    baseElement.innerHTML += htmlTEmplate;
+    baseElement.innerHTML += htmlTemplate;
   }
 
   static _createAudioElement({ muted = true, srcObject }) {
@@ -66,7 +66,7 @@ export default class View {
       try {
         await audio.play();
       } catch (error) {
-        console.error("error, to play", error);
+        console.error("erro to play", error);
       }
     });
   }
@@ -76,6 +76,19 @@ export default class View {
       muted: isCurrentId,
       srcObject: stream,
     });
+  }
+  static showUserFeatures(isSpeaker) {
+    // attendee
+    if (!isSpeaker) {
+      btnClap.classList.remove("hidden");
+      btnMicrophone.classList.add("hidden");
+      btnClipBoard.classList.add("hidden");
+      return;
+    }
+    // speaker
+    btnClap.classList.add("hidden");
+    btnMicrophone.classList.remove("hidden");
+    btnClipBoard.classList.remove("hidden");
   }
 
   static _onClapClick(command) {
@@ -89,13 +102,11 @@ export default class View {
         toggleImage.src = `${basePath}${handActive}`;
         return;
       }
-
       toggleImage.src = `${basePath}${handInactive}`;
     };
   }
-
   static configureClapButton(command) {
-    btnClap.addEventListener("click", () => View._onClapClick(command));
+    btnClap.addEventListener("click", View._onClapClick(command));
   }
 
   static _redirectToLobby() {
@@ -118,8 +129,9 @@ export default class View {
 
     icon.classList.add(inactiveMicClass);
     icon.classList.remove(activeMicClass);
+    //
+    //
   }
-
   static configureLeaveButton() {
     btnLeave.addEventListener("click", () => View._redirectToLobby());
   }
@@ -129,18 +141,5 @@ export default class View {
       View._toggleMicrophoneIcon();
       command();
     });
-  }
-
-  static showUserFeatures(isSpeaker) {
-    if (!isSpeaker) {
-      btnClap.classList.remove("hidden");
-      btnMicrophone.classList.add("hidden");
-      btnClipBoard.classList.add("hidden");
-      return;
-    }
-
-    btnClap.classList.add("hidden");
-    btnMicrophone.classList.remove("hidden");
-    btnClipBoard.classList.remove("hidden");
   }
 }

@@ -7,16 +7,16 @@ export const constants = {
   peerConfig: Object.values({
     id: undefined,
     // config: {
-    //   port: 9000,
-    //   host: 'localhost',
-    //   path: '/'
+    //     port: 9000,
+    //     host: 'localhost',
+    //     path: '/'
     // }
   }),
   pages: {
     lobby: "/pages/lobby",
     login: "/pages/login",
   },
-  event: {
+  events: {
     USER_CONNECTED: "userConnection",
     USER_DISCONNECTED: "userDisconnection",
     JOIN_ROOM: "joinRoom",
