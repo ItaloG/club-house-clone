@@ -25,4 +25,14 @@ export const constants = {
     SPEAK_REQUEST: "speakRequest",
     SPEAK_ANSWER: "speakAnswer",
   },
+  firebaseConfig: {
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+    measurementId: "",
+  },
+  storageKey: "@user",
 };

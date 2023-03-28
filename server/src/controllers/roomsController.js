@@ -56,12 +56,10 @@ export default class RoomsController {
 
   onNewConnection(socket) {
     const { id } = socket;
-    console.log("connection stablished with", id);
     this.#updateGlobalUserData(id);
   }
 
   disconnect(socket) {
-    console.log("disconnect!!", socket.id);
     this.#logoutUser(socket);
   }
 

@@ -46,7 +46,6 @@ export default class RoomService {
     for (const peer of this.peers.values()) {
       const peerId = peer.call.peer;
       peer.call.close();
-      console.log("calling", peerId);
 
       this.currentPeer.call(peerId, stream);
     }

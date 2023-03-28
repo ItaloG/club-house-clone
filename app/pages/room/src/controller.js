@@ -80,7 +80,6 @@ export default class RoomController {
   onStreamReceived() {
     return (call, stream) => {
       const callerId = call.peer;
-      console.log("onStreamReceived", call, stream);
       const { isCurrentId } = this.roomService.addReceivedPeer(call);
       // console.warn('audio desabilitado')
       this.view.renderAudioElement({
@@ -93,7 +92,6 @@ export default class RoomController {
 
   onCallClose() {
     return (call) => {
-      console.log("onCallClose", call);
       const peerId = call.peer;
       this.roomService.disconnectPeer({ peerId });
     };
@@ -101,7 +99,6 @@ export default class RoomController {
 
   onCallError() {
     return (call, error) => {
-      console.log("onCallError", call, error);
       const peerId = call.peer;
       this.roomService.disconnectPeer({ peerId });
     };
@@ -110,7 +107,6 @@ export default class RoomController {
   onCallReceived() {
     return async (call) => {
       const stream = await this.roomService.getCurrentStream();
-      console.log("answering call", call);
       call.answer(stream);
     };
   }
@@ -123,7 +119,6 @@ export default class RoomController {
   // quando a conexao for aberta ele pede para entrar na sala do socket
   onPeerConnectionOpened() {
     return (peer) => {
-      console.log("peeeeer", peer);
       this.roomInfo.user.peerId = peer.id;
       this.socket.emit(constants.events.JOIN_ROOM, this.roomInfo);
     };
@@ -132,7 +127,6 @@ export default class RoomController {
   onUserProfileUpgrade() {
     return (data) => {
       const attendee = new Attendee(data);
-      console.log("onUserProfileUpgrade", attendee);
 
       if (attendee.isSpeaker) {
         this.roomService.upgradeUserPermission(attendee);
@@ -146,7 +140,6 @@ export default class RoomController {
   onRoomUpdated() {
     return (data) => {
       const users = data.map((item) => new Attendee(item));
-      console.log("room list!", users);
 
       this.view.updateAttendeesOnGrid(users);
       this.roomService.updateCurrentUserProfile(users);
@@ -158,7 +151,6 @@ export default class RoomController {
     return (data) => {
       const attendee = new Attendee(data);
 
-      console.log(`${attendee.username} disconnected!`);
       this.view.removeItemFromGrid(attendee.id);
 
       this.roomService.disconnectPeer(attendee);
@@ -168,7 +160,6 @@ export default class RoomController {
   onUserConnected() {
     return (data) => {
       const attendee = new Attendee(data);
-      console.log("user connected!", attendee);
       this.view.addAttendeeOnGrid(attendee);
 
       // vamos ligar!!

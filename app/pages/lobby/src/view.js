@@ -1,3 +1,4 @@
+import { constants } from "../../_shared/constants.js";
 import Room from "./entities/room.js";
 import getTemplate from "./templates/lobbyItem.js";
 
@@ -16,8 +17,13 @@ export default class View {
   static clearRoomList() {
     roomGrid.innerHTML = "";
   }
+
   static generateRoomLink({ id, topic }) {
     return `./../room/index.html?id=${id}&topic=${topic}`;
+  }
+
+  static redirectToLogin() {
+    window.location = constants.pages.login;
   }
 
   static redirectToRoom(topic = "") {
@@ -39,6 +45,7 @@ export default class View {
       View.redirectToRoom(topic);
     });
   }
+
   static updateRoomList(rooms) {
     View.clearRoomList();
 
